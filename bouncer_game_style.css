@@ -1,0 +1,13 @@
+#MenuContainer{
+	border: solid 3px black;
+}
+#RoomsList{
+	position: absolute;
+	top: 0%;
+	right: 0%;
+}
+#PlayerName{
+	position: absolute;
+	top: 0%;
+	left: 0%;	
+}
