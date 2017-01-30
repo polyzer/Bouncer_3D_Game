@@ -2,7 +2,7 @@
  * Класс описывает куб, управляемый другим компьютером!
  * */
 
-var _QBorgAICube = function (json_params)
+var _AICube = function (json_params)
 {	
 	this.Player = null;
 	
@@ -34,7 +34,7 @@ var _QBorgAICube = function (json_params)
 	}
 };
 // это функция, которая должна вызываться в главной игровой функции
-_QBorgAICube.prototype.Life = function ()
+_AICube.prototype.Life = function ()
 {
 	if(this.Status !== "dead")
 	{
@@ -43,7 +43,7 @@ _QBorgAICube.prototype.Life = function ()
 	}
 };
 
-_QBorgAICube.prototype.attackControl() = function ()
+_AICube.prototype.attackControl() = function ()
 {
 	if(this.Target 
 	if(this.Targets !== undefined && this.Targets !== null)
@@ -52,12 +52,12 @@ _QBorgAICube.prototype.attackControl() = function ()
 	}
 };
 
-_QBorgAICube.prototype.movingControl = function ()
+_AICube.prototype.movingControl = function ()
 {
 };
 
 // эта функция вызывается, когда наносится урон игроку
-_QBorgAICube.prototype.onAttackMe = function (json_params) 
+_AICube.prototype.onAttackMe = function (json_params) 
 {
 	if(json_params !== undefined)
 	{

@@ -36,16 +36,16 @@ var _Game = function (json_params)
 	this.NetMessagesObject = new _NetMessages({nickname: this.Nickname, id: this.ID});
 	
 	// Список удаленных игроков;
-	this.RemoteUsers = [];
+	this.RemotePlayers = [];
  
   // Локальный игрок
-	this.LocalUser = null;
+	this.LocalPlayer = null;
 	/*Все игроки в системе.
-	[0] - LocalUser;
-	[1] - RemoteUsers - удаленные игроки
+	[0] - LocalPlayer;
+	[1] - RemotePlayers - удаленные игроки
   структура, хранящая всех игроков, включая локального;	
 	*/
-	this.AllUsers = [];
+	this.AllPlayers = [];
 	/*Идентификатор комнаты будет устанавливаться,
 		когда пользователь будет в комнате;
 	*/
@@ -54,9 +54,9 @@ var _Game = function (json_params)
 		this.setRoomID(json_params.room_id);
 	this.Peer = json_params.peer;
 		
-	this.createUsersByExistingConnectionsBF = this.createUsersByExistingConnections.bind(this);
+	this.createPlayersByExistingConnectionsBF = this.createPlayersByExistingConnections.bind(this);
 	this.updateWorkingProcessBF = this.updateWorkingProcess.bind(this);
-	this.createUserByRecievedConnectionBF = this.createUserByRecievedConnection.bind(this);
+	this.createPlayerByRecievedConnectionBF = this.createPlayerByRecievedConnection.bind(this);
 	this.onCallBF = this.onCall.bind(this);
 			
   this.onOpenInitAndStartGame();
@@ -68,11 +68,11 @@ var _Game = function (json_params)
  */
 _Game.prototype.onCall = function (call)
 {
-	for(var i=0; i<this.AllUsers[1].length; i++)
+	for(var i=0; i<this.AllPlayers[1].length; i++)
 	{
 		call.answer(Stream);
-		if(this.AllUsers[1][i].getPeerID() === call.peer)
-			this.AllUsers[1][i].onCall(call);
+		if(this.AllPlayers[1][i].getPeerID() === call.peer)
+			this.AllPlayers[1][i].onCall(call);
 	}
 };
 
@@ -80,23 +80,23 @@ _Game.prototype.onCall = function (call)
 /* Инициализирует начало работы Peer.js
  */
 _Game.prototype.onOpenInitAndStartGame = function (e)
-{
-	this.AllUsers.push(this.LocalUser);
-	this.AllUsers.push(this.RemoteUsers);
-	
+{	
   	// Устанавливаем обработчика событий
-	this.Peer.on('connection', this.createUserByRecievedConnectionBF);
+	this.Peer.on('connection', this.createPlayerByRecievedConnectionBF);
   	this.Peer.on('call', this.onCallBF);
 	// Локальный игрок, который будет
-	this.LocalUser = new _LocalUser({
+	this.LocalPlayer = new _LocalPlayer({
 		scene: this.Scene, 
-		all_users: this.AllUsers, 
+		all_players: this.AllPlayers, 
 		net_messages_object: this.NetMessagesObject,
 		camera: this.Camera,
 		game_width: this.GameWidth,
 		game_height: this.GameHeight,
 		body: this.Body
 	});
+
+	this.AllPlayers.push(this.LocalPlayer);
+	this.AllPlayers.push(this.RemotePlayers);
 	
 	this.getAndSetInitConnections();
 
@@ -110,12 +110,12 @@ _Game.prototype.onOpenInitAndStartGame = function (e)
  * Принимает на вход:
  * json_params: {response: [ids]}
  */
-_Game.prototype.createUsersByExistingConnections = function (json_params)
+_Game.prototype.createPlayersByExistingConnections = function (json_params)
 {
 	alert(json_params);
 	if(json_params === "undefined")
 	{
-		throw new Error(this.constructor.name + ".createUsersByExistingConnections(json_response) - have no json_response");
+		throw new Error(this.constructor.name + ".createPlayersByExistingConnections(json_response) - have no json_response");
 		return;
 	}
 	
@@ -132,11 +132,11 @@ _Game.prototype.createUsersByExistingConnections = function (json_params)
 			continue;
 		}
 		conn = this.Peer.connect(json_params.response[i]);
-		alert(StreamObj);
-		this.Peer.call(json_params.response[i], StreamObj);///////////////////////////////////////////???????!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		this.RemoteUsers.push(new _RemoteUser({
+		
+		//this.Peer.call(json_params.response[i], StreamObj);///////////////////////////////////////////???????!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+		this.RemotePlayers.push(new _RemotePlayer({
 				net_messages_object: this.NetMessagesObject,
-				all_users: this.AllUsers,
+				all_users: this.AllPlayers,
 				scene: this.Scene,
 				connection: conn
 			}));
@@ -150,19 +150,19 @@ _Game.prototype.createUsersByExistingConnections = function (json_params)
 _Game.prototype.updateWorkingProcess = function ()
 {
 		this.Renderer.render(this.Scene, this.Camera);
-		this.LocalUser.update();
-		this.updateRemoteUsers();
+		this.LocalPlayer.update();
+		this.updateRemotePlayers();
 
 	  requestAnimationFrame(this.updateWorkingProcessBF);
 }
 
 /* Производит обновление телодвижений удаленных игроков.
  */
-_Game.prototype.updateRemoteUsers = function ()
+_Game.prototype.updateRemotePlayers = function ()
 {
-		for(var j=0; j<this.RemoteUsers.length; j++)
+		for(var j=0; j<this.RemotePlayers.length; j++)
 	  {
-			this.RemoteUsers[j].update();
+			this.RemotePlayers[j].update();
 		}
 }
 
@@ -190,19 +190,19 @@ _Game.prototype.getAndSetInitConnections = function (json_params)
 		async: false,
 		crossDomain: true,
 		data: {room_id : this.RoomID, user_id: this.Peer.id},
-		success: this.createUsersByExistingConnectionsBF
+		success: this.createPlayersByExistingConnectionsBF
 	});
 }
 
 /* функция добавляет полученное соединение в массив соединений Connections
  * и сразу отправляет запрос на получение nickname нового игрока
  */
-_Game.prototype.createUserByRecievedConnection = function (conn)
+_Game.prototype.createPlayerByRecievedConnection = function (conn)
 {
-	this.RemoteUsers.push(new _RemoteUser({
+	this.RemotePlayers.push(new _RemotePlayer({
 								connection: conn,
 								scene: this.Scene,
-								all_users: this.AllUsers,
+								all_users: this.AllPlayers,
 								net_messages_object: this.NetMessagesObject													
 					   }));
 };
@@ -210,12 +210,12 @@ _Game.prototype.createUserByRecievedConnection = function (conn)
 
 /* завершаем соединение с игроком
  */
-_Game.prototype.disconnectRemoteUsers = function()
+_Game.prototype.disconnectRemotePlayers = function()
 {
-	while(this.RemoteUsers.length > 0)
+	while(this.RemotePlayers.length > 0)
 	{
-		this.RemoteUsers[this.RemoteUsers.length-1].Conection.close();
-		this.RemoteUsers.pop();
+		this.RemotePlayers[this.RemotePlayers.length-1].Conection.close();
+		this.RemotePlayers.pop();
 	}
 };
 /*Устанавливает Nickname во всех необходимых структурах

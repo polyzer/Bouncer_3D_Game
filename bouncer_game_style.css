@@ -1,13 +1,26 @@
+#start_button{
+	height: 100px;
+	width: 400px;
+	font-size: 50px;
+}
+
+#nickname_input{
+	width: 300px;
+	font-size: 30px;
+}
+
+#rooms_list_select{
+	width: 300px;
+	font-size: 30px;
+}
+
 #MenuContainer{
-	border: solid 3px black;
-}
-#RoomsList{
 	position: absolute;
-	top: 0%;
-	right: 0%;
+	left: 0px;
+	right: 0px;
 }
-#PlayerName{
+#MainContainer{
 	position: absolute;
-	top: 0%;
-	left: 0%;	
+	left: 0px;
+	right: 0px;
 }

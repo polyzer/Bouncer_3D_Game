@@ -91,11 +91,12 @@ var _Menu = function (json_params)
 
 	this.checkNicknameRegExp = new RegExp("\\w+");
 	
-	this.Peer = new Peer({host: PEER_SERVER_ADDR, 
-						  port: PEER_PORT_ADDR, 
-						  path: PEER_PATH_ADDR,
-						  debug: true
-						});
+	this.Peer = new Peer({
+		host: PEER_SERVER_ADDR, 
+		port: PEER_PORT_ADDR, 
+		path: PEER_PATH_ADDR,
+		debug: true
+	});
 
 	this.Body = new _Body();
 
@@ -269,7 +270,7 @@ _Menu.prototype.onStartButtonClick = function ()
 {
 	if(this.canStart() === true)
 	{
-		this.SpaceChat = new _VKSpaceChat({
+		this.SpaceChat = new _Game({
 				room_id: this.RoomID,
 				camera_parameters: this.CameraParameters,
 				peer: this.Peer,

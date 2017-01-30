@@ -13,23 +13,23 @@
 			 
 <script src="../games_resources/libs/jquery.js"></script>
 <script src="../games_resources/libs/peer.min.js"></script>
-<script src="../games_resources/libs/katex/katex.min.js"></script>
-<link href="../games_resources/libs/katex/katex.min.css" rel="stylesheet" type="text/css">
 
-<script src="./bounce_game_constants_and_general_functions.js"></script>
-<script src="./bounce_game_net_messages.js"></script>
-<script src="./bounce_game.js"></script>
-<script src="./bounce_game_menu.js"></script>
-<script src="./bounce_game_users.js"></script>
-<script src="./bounce_game_visual_keeper.js"></script>
-<script src="./bounce_game_hint.js"></script>
-<script src="./bounce_game_body.js"></script>
+<script src="./bouncer_game_constants_and_general_functions.js"></script>
+<script src="./bouncer_game_net_messages.js"></script>
+<script src="./bouncer_game.js"></script>
+<script src="./bouncer_game_menu.js"></script>
+<script src="./bouncer_game_players.js"></script>
+<script src="./bouncer_game_hint.js"></script>
+<script src="./bouncer_game_body.js"></script>
+<script src='./bouncer_game_player_ship.js'></script>
+<script src='./bouncer_game_player_ship_guns.js'></script>
+<script src='./bouncer_game_player_ship_guns_bullet.js'></script>
 </head>
 
 <body>
 
 <script>
-var MenuObj = new _GameMenu();
+var MenuObj = new _Menu();
 </script>
 </body>
 </html>

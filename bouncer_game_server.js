@@ -27,7 +27,7 @@ app.use(urlencodedParser);
  */
 var _Room = function (json_params)
 {
-	this.UsersIDSArray = [];
+	this.PlayersIDSArray = [];
 	this.RoomType = 0;
 	this.MaxPlayersCount = 20;
 	this.RoomID = const_and_funcs.DEFAULT_ROOM_ID;
@@ -59,12 +59,12 @@ function SingleRoom_onDisconnect(id)
 		}
 	}
 	
-	for(var i=0; i<Rooms[0].UsersIDSArray.length; i++)
+	for(var i=0; i<Rooms[0].PlayersIDSArray.length; i++)
 	{
-		if(Rooms[0].UsersIDSArray[i] === id)
+		if(Rooms[0].PlayersIDSArray[i] === id)
 		{
-			Rooms[0].UsersIDSArray.splice(i, 1);
-			console.log("was spliced from Rooms[0].UsersIDSArray: " + id);
+			Rooms[0].PlayersIDSArray.splice(i, 1);
+			console.log("was spliced from Rooms[0].PlayersIDSArray: " + id);
 			return;
 		}
 	}
@@ -94,8 +94,8 @@ function SingleRoom_onComeIntoRoom(req, res)
   {
 		if(Rooms[i].RoomID === req.body.room_id)
 		{
-			res.send(JSON.stringify({response: Rooms[i].UsersIDSArray})); 
-			Rooms[i].UsersIDSArray.push(req.body.user_id);			
+			res.send(JSON.stringify({response: Rooms[i].PlayersIDSArray})); 
+			Rooms[i].PlayersIDSArray.push(req.body.user_id);			
 			console.log("id: " + req.body.user_id + " was add to DefaultRoom");
 			for (var j=0; j < UndecidedIDs.length; j++)
 			{
@@ -111,7 +111,7 @@ function SingleRoom_onComeIntoRoom(req, res)
 	
 	throw new Error("problem in SingleRoom_onComeIntoRoom: have no room with requested id!!!");
 
-}
+};
 
 function SingleRoom_onLeaveRoom(req, res)
 {
@@ -119,20 +119,20 @@ function SingleRoom_onLeaveRoom(req, res)
 	res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");  
   
 
-	for(var i=0; i<Rooms[0].UsersIDSArray.length; i++)
+	for(var i=0; i<Rooms[0].PlayersIDSArray.length; i++)
 	{
 		if(Rooms[0][i] === req.query.user_id)
 		{
-			Rooms[0].UsersIDSArray.splice(i, 1);
+			Rooms[0].PlayersIDSArray.splice(i, 1);
 			UndecidedIDs.push(req.query.user_id);
 			return;
 		}
 	}
-}
+};
 
 function SingleRoom_onCreateRoom(req, res)
 {
-}
+};
 
 
 
@@ -153,12 +153,12 @@ function MultiRoom_onDisconnect(id)
 	
 	for(var i=0; i<Rooms.length; i++)
 	{
-		for(var j=0; j<Rooms[i].UsersIDSArray.length; j++)
+		for(var j=0; j<Rooms[i].PlayersIDSArray.length; j++)
 		{
 			/*Если нашли совпадение id'шников*/
-			if(Rooms[i].UsersIDSArray[j] === id)
+			if(Rooms[i].PlayersIDSArray[j] === id)
 			{
-				Rooms[i].UsersIDSArray.splice(j, 1);
+				Rooms[i].PlayersIDSArray.splice(j, 1);
 				return;
 			}
 			
@@ -205,8 +205,8 @@ function MultiRoom_onComeIntoRoom(req, res)
   {
 		if(Rooms[i].RoomID === req.body.room_id)
 		{
-			res.send(JSON.stringify({response: Rooms[i].UsersIDSArray})); 
-			Rooms[i].UsersIDSArray.push(req.body.user_id);			
+			res.send(JSON.stringify({response: Rooms[i].PlayersIDSArray})); 
+			Rooms[i].PlayersIDSArray.push(req.body.user_id);			
 			for (var j=0; j < UndecidedIDs.length; j++)
 			{
 				if(UndecidedIDs[j] === req.body.user_id)
@@ -235,13 +235,13 @@ function MultiRoom_onLeaveRoom(req, res)
 	{
 		if(Rooms[i].RoomID === req.body.room_id)
 		{
-			for(var j=0; j<Rooms[i].UsersIDSArray.length; j++)
+			for(var j=0; j<Rooms[i].PlayersIDSArray.length; j++)
 			{
 				/*Если нашли совпадение id'шников*/
-				if(Rooms[i].UsersIDSArray[j] === req.body.user_id)
+				if(Rooms[i].PlayersIDSArray[j] === req.body.user_id)
 				{
-					Rooms[i].UsersIDSArray.splice(j, 1);
-					if((Rooms[i].UsersIDSArray.length === 0) && (Rooms[i].UsersIDSArray.RoomID !== DefaultRoom.RoomID))
+					Rooms[i].PlayersIDSArray.splice(j, 1);
+					if((Rooms[i].PlayersIDSArray.length === 0) && (Rooms[i].PlayersIDSArray.RoomID !== DefaultRoom.RoomID))
 					{
 						Rooms.splice(i, 1);
 					}
