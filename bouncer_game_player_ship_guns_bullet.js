@@ -18,7 +18,8 @@ var _PlasmaBullet = function (json_params)
 	this.Damage = json_params.damage;
 	this.OwnerID = json_params.owner_id;
 	
-	this.BBox = new THREE.BoundingBoxHelper(this.Mesh, 0x00ff00);
+	this.BBox = new THREE.Box3();
+	this.BBox.setFromObject(this.Mesh);
 	
 	this.Status = "live";		
 	
@@ -40,7 +41,7 @@ _PlasmaBullet.prototype.removeFromScene = function (scene)
 
 _PlasmaBullet.prototype.update = function ()
 {
-	this.BBox.update();
+	this.BBox.setFromObject(this.Mesh);
 	this.collisionControl();
 };
 
@@ -61,7 +62,7 @@ _PlasmaBullet.prototype.getStatus = function ()
  */
 _PlasmaBullet.prototype.collisionControl = function ()
 {
-	if(this.BBox.box.intersectsBox(this.AllPlayers[0].getShip().BBox.box))
+	if(this.BBox.intersectsBox(this.AllPlayers[0].getShip().BBox))
 	{
 		if(this.AllPlayers[0].ID === this.OwnerID)
 			return;
@@ -72,7 +73,7 @@ _PlasmaBullet.prototype.collisionControl = function ()
 	
 	for(var i=0; i<this.AllPlayers[1].length; i++)
 	{
-		if(this.BBox.box.intersectsBox(this.AllPlayers[1][i].getShip().BBox.box))
+		if(this.BBox.intersectsBox(this.AllPlayers[1][i].getShip().BBox))
 		{
 			if(this.AllPlayers[1][i].ID === this.OwnerID)
 				return;

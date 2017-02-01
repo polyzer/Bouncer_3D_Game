@@ -129,12 +129,15 @@ _LocalPlayer.prototype.raycastingControl = function ()
 	this.Raycaster.setFromCamera(this.MouseVector, this.Camera);
 
 	var intersects = this.Raycaster.intersectObjects(this.Scene.children);
+	//window.alert(this.INTERSECTED);
 	if (intersects.length > 0)
 	{
 		if(this.INTERSECTED != intersects[0].object)
 		{
-			if(this.INTERSECTED)
+			if(this.INTERSECTED !== null && this.INTERSECTED !== undefined)
 				this.INTERSECTED.material.emissive.setHex(this.INTERSECTED.currentHex);
+			else
+				return;
 			this.INTERSECTED = intersects[0].object;
 			this.INTERSECTED.currentHex = this.INTERSECTED.material.emissive.getHex();
 			this.INTERSECTED.material.emissive.setHex(0xff0000);

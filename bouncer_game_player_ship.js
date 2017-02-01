@@ -44,7 +44,8 @@ var _PlayerShip = function (json_params)
 		this.Mesh = new THREE.Object3D();
 		this.Mesh.position.set(0,0,0);
 		this.ShipMesh.position.set(0, 0, 0);
-		this.BBox = new THREE.BoundingBoxHelper(this.ShipMesh, 0x00ff00);	
+		this.BBox = new THREE.Box3();
+		this.BBox.setFromObject(this.ShipMesh);	
 		
 		this.Camera.position.copy(this.ShipMesh.position);
 		
@@ -59,7 +60,8 @@ var _PlayerShip = function (json_params)
 	// Для удаленного игрока
 	{
 		this.Mesh = new THREE.Mesh(this.Geometry, this.Material);
-		this.BBox = new THREE.BoundingBoxHelper(this.Mesh, 0x00ff00);	
+		this.BBox = new THREE.Box3();
+		this.BBox.setFromObject(this.Mesh);	
 	}
 	
 	if(json_params.random !== undefined)
@@ -98,7 +100,7 @@ _PlayerShip.prototype.setRandomPosition = function ()
 // это функция, которая должна вызываться в главной игровой функции
 _PlayerShip.prototype.Life = function ()
 {
-	this.BBox.update();
+	this.BBox.setFromObject(this.Mesh);	
 	
 	this.statusControl();
 	
